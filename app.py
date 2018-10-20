@@ -6,7 +6,26 @@ app = Flask(__name__)
 
 @app.route('/member', methods=['GET'])
 def get_members():
-    return 'This returns all the members.'
+    db = get_db()
+    member_cur = db.execute('''
+                SELECT
+                    id, name, email, level 
+                FROM
+                    members
+    ''')
+    members = member_cur.fetchall()
+
+    return_values = []
+
+    for member in members:
+        member_dict = {}
+        member_dict['id'] = member['id']
+        member_dict['name'] = member['name']
+        member_dict['email'] = member['email']
+        member_dict['level'] = member['level']
+        return_values.append(member_dict)
+
+    return jsonify({'members': return_values})
 
 
 @app.teardown_appcontext
