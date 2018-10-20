@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, g
+from database import get_db
 
 app = Flask(__name__)
 
@@ -7,6 +8,11 @@ app = Flask(__name__)
 def get_members():
     return 'This returns all the members.'
 
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
 
 @app.route('/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
