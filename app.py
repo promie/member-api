@@ -14,6 +14,7 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+
 @app.route('/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
     return 'The returns one member by ID.'

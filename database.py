@@ -3,7 +3,7 @@ import sqlite3
 
 
 def connect_db():
-    sql = sqlite3.connect('/Users/promieyutasane/Dropbox/Github/member-api/member.db')
+    sql = sqlite3.connect('/Users/promieyutasane/Dropbox/Github/member-api/members.db')
     sql.row_factory = sqlite3.Row
     return sql
 
