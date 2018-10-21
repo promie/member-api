@@ -3,6 +3,11 @@ from database import get_db
 
 app = Flask(__name__)
 
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
+
 
 @app.route('/member', methods=['GET'])
 def get_members():
@@ -28,15 +33,24 @@ def get_members():
     return jsonify({'members': return_values})
 
 
-@app.teardown_appcontext
-def close_db(error):
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
-
-
 @app.route('/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
-    return 'The returns one member by ID.'
+    db = get_db()
+    member_cur = db.execute('''
+        SELECT
+            id, name, email, level
+        FROM
+            members
+        WHERE
+            id = ?
+    ''', [member_id])
+    member = member_cur.fetchone()
+
+    return jsonify({'member': {'id': member['id'],
+                    'name': member['name'],
+                    'email': member['email'],
+                    'level': member['level']
+                    }})
 
 
 @app.route('/member', methods=['POST'])
